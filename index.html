@@ -203,6 +203,17 @@ code{background:var(--bg);padding:1px 5px;border-radius:5px;font-size:12px}
 #tour{position:fixed;inset:0;z-index:200}
 .tbox{position:fixed;border-radius:18px;box-shadow:0 0 0 9999px rgba(5,6,10,.8);border:2px solid var(--acc);transition:all .3s;pointer-events:none}
 .ttip{position:fixed;left:16px;right:16px;max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 12px 40px #000}
+
+.banner.inst{margin-top:12px;background:linear-gradient(135deg,#1d2a12,#141a10);border-color:#3c5418}
+.pstep{display:flex;gap:12px;padding:12px;border-radius:16px;background:var(--bg);border:1px solid var(--line);margin-bottom:8px}
+.pstep.ok{border-color:#3c5418}.pnum{width:30px;height:30px;border-radius:50%;background:var(--card2);display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.pstep.ok .pnum{background:var(--acc);color:#0d0f14}
+.istep{display:flex;gap:12px;align-items:center;padding:10px 0;font-size:15px}.istep+.istep{border-top:1px solid var(--line)}
+.istep>span{width:28px;height:28px;border-radius:50%;background:var(--acc);color:#0d0f14;font-weight:700;display:grid;place-items:center;flex-shrink:0}
+.kbd{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:7px;padding:0 6px}
+.calopt{background:var(--bg);border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}
+a.btn{text-decoration:none;display:inline-block;flex-shrink:0}
+details summary{list-style:none;margin:6px 0}
 </style>
 </head>
 <body>
@@ -405,7 +416,7 @@ function vHoy(){const t=today(),ts=tasksOn(t),dn=ts.filter(x=>x.done).length,hl=
   const tot=pomo.mode==='foco'?1500:300,pm=Math.floor(pomo.left/60),ps=pomo.left%60;
   const q=(ic,lb,act,extra)=>`<button class="qa" data-act="${act}" ${extra}><span>${ic}</span>${lb}</button>`;
   const ag=S.habits.find(h=>h.id==='agua'),tb=S.limits.find(l=>l.id==='tabaco'),cs=S.limits.find(l=>l.id==='casa');
-  return heroHTML()+`<div class="quote">💬 ${fraseHoy()}</div>`+(S.offDays[t]?offHTML():'')
+  return heroHTML()+`<div class="quote">💬 ${fraseHoy()}</div>`+installBanner()+(isStandalone()&&notifState()==='default'?`<div class="banner inst"><div class="row"><div style="font-size:30px">🔔</div><div class="sp"><b>Activa los avisos</b><div class="mut" style="font-size:12px">Para que OpoQuest te recuerde tus tareas</div></div><button class="btn sm" data-act="askperm">Permitir</button></div></div>`:'')+(S.offDays[t]?offHTML():'')
   +(sun?`<div class="banner"><div class="row"><div style="font-size:30px">📥</div><div class="sp"><b>Es domingo</b><div class="mut" style="color:#c9c3ff;font-size:13px">Sube el plan de tu preparador</div></div><button class="btn sm" data-act="import">Subir</button></div></div>`:'')
   +`<div class="dayc"><div class="dring" style="${ring(sc,sc>=1?'var(--gold)':'var(--acc)')}"><div><b>${Math.round(sc*100)}%</b><small>de tu día</small></div></div>
    <div class="sp"><div class="dl"><span>📋</span><div class="sp">Tareas</div><b>${dn}/${ts.length}</b></div><div class="mbar"><i style="width:${ts.length?dn/ts.length*100:0}%"></i></div>
@@ -430,7 +441,7 @@ function vSemana(){const m=monOf(SEL),ts=tasksOn(SEL),days=[0,1,2,3,4,5,6].map(i
   return `<div class="row" style="margin-top:6px"><button class="mini" data-act="wk" data-n="-7">‹</button><div class="sp" style="text-align:center"><b>Semana del ${pd(m).getDate()} ${MN[pd(m).getMonth()]}</b><div class="mut" style="font-size:12px">${Math.round(mins.reduce((a,b)=>a+b,0)/60)} h planificadas</div></div><button class="mini" data-act="wk" data-n="7">›</button></div>
   <div class="wkc">${days.map((d,i)=>{const dd=tasksOn(d),done=dd.filter(x=>x.done).reduce((a,b)=>a+b.dur,0);
     return `<button class="wd ${d===SEL?'on':''} ${d===today()?'today':''}" data-act="sel" data-d="${d}"><div class="wb"><i style="height:${mins[i]/mx*100}%"><u style="height:${mins[i]?done/mins[i]*100:0}%"></u></i></div><small>${DN[i]}</small><b>${pd(d).getDate()}</b></button>`}).join('')}</div>
-  <div class="row" style="gap:8px;margin-top:12px"><button class="btn" style="flex:1" data-act="import">📥 Subir plan</button><button class="btn ghost" style="flex:1" data-act="add" data-date="${SEL}">+ Tarea</button></div>
+  <div class="row" style="gap:8px;margin-top:12px"><button class="btn" style="flex:1" data-act="import">📥 Subir plan</button><button class="btn ghost" style="flex:1" data-act="add" data-date="${SEL}">+ Tarea</button></div><button class="offlink" style="margin-top:8px" data-act="calset">📅 Pasar los avisos de esta semana al calendario del móvil</button>
   <h2>${DL[wd(SEL)]} ${pd(SEL).getDate()} <span class="pill">${mins[wd(SEL)]} min</span></h2>
   ${ts.length?`<div class="tlw">${ts.map(taskHTML).join('')}</div>`:'<div class="empty"><div style="font-size:36px">🗓️</div>Nada agendado</div>'}
   <h2>🔁 Rutinas fijas <button class="lnk" data-act="add" data-date="${SEL}" data-rut="1">+ Nueva</button></h2>
@@ -507,6 +518,74 @@ function setupForm(){TMP={mode:TMP.mode||'opo'};openM(`<div style="text-align:ce
   <div style="display:grid;gap:8px;margin-top:16px"><button class="btn" data-act="setup" data-v="zero">🚀 Empezar de cero</button><button class="btn ghost" data-act="setup" data-v="demo">👀 Ver con datos de ejemplo</button></div>`)}
 function manageHTML(){return `<h2>⚙️ Gestionar hábitos</h2><div class="card" style="padding:6px 12px">${S.habits.map(h=>`<div class="mv"><span style="font-size:20px">${h.icon}</span><div class="sp" style="font-size:14px">${esc(h.name)}<div class="mut" style="font-size:11px">${h.target>1?h.target+' veces/día':'1 vez/día'}${h.remind?' · 🔔 '+h.remind:''}</div></div><button class="del" data-act="delhab" data-id="${h.id}">🗑</button></div>`).join('')}</div>`}
 
+/* ============ móvil: instalar, permisos y avisos con la app cerrada ============ */
+let DEFERRED=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();DEFERRED=e;if(TAB==='hoy'||TAB==='liga')render()});
+window.addEventListener('appinstalled',()=>{DEFERRED=null;toast('✅ App instalada');render()});
+const isStandalone=()=>{try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}catch(e){return false}};
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const notifState=()=>!('Notification' in window)?'na':Notification.permission;
+function installBanner(){if(isStandalone()||S.hideInstall===today())return '';
+  return `<div class="banner inst"><div class="row"><img src="icons/icon-192.png" style="width:44px;height:44px;border-radius:12px"><div class="sp"><b>Instala OpoQuest</b><div class="mut" style="font-size:12px">Ábrela como una app y recibe avisos en el móvil</div></div><button class="btn sm" data-act="phone">Instalar</button></div>
+  <button class="lnk" style="color:var(--mut);font-size:11px;margin-top:6px" data-act="hideinst">Ahora no</button></div>`}
+function phoneSetup(){const st=isStandalone(),ns=notifState(),cal=!!S.calDone;
+  const step=(n,ok,ic,t,d,btn)=>`<div class="pstep ${ok?'ok':''}"><div class="pnum">${ok?'✓':n}</div><div class="sp"><b>${ic} ${t}</b><div class="mut" style="font-size:12px;margin-top:2px">${d}</div>${ok?'':btn}</div></div>`;
+  openM(`<h3>📲 Configura tu móvil</h3><div class="mut" style="margin-bottom:12px">3 pasos para que OpoQuest te avise siempre.</div>
+  ${step(1,st,'📲','Instalar la app',st?'Ya está instalada':'Para tenerla con su icono y a pantalla completa.',`<button class="btn sm" style="margin-top:8px" data-act="install">Instalar ahora</button>`)}
+  ${step(2,ns==='granted','🔔','Permitir avisos',ns==='granted'?'Avisos activados':ns==='denied'?'Están bloqueados: actívalos en los ajustes del navegador o del móvil (Notificaciones → OpoQuest).':ns==='na'?(isIOS?'En iPhone, primero instala la app (paso 1) y ábrela desde su icono.':'Este navegador no admite avisos.'):'Te avisa de tareas, agua, salir de casa, cierre del día…',ns==='default'?`<button class="btn sm" style="margin-top:8px" data-act="askperm">Permitir avisos</button>`:'')}
+  ${step(3,cal,'📅','Avisos con la app cerrada','Pasamos tus recordatorios al calendario del móvil, que te avisa aunque no abras la app.',`<button class="btn sm" style="margin-top:8px" data-act="calset">Configurar</button>`)}
+  <button class="btn ghost" style="width:100%;margin-top:14px" data-act="close">${st&&ns==='granted'&&cal?'¡Todo listo!':'Hecho por ahora'}</button>`)}
+function installHelp(){if(isIOS)return openM(`<h3>📲 Instalar en iPhone</h3>
+  <div class="istep"><span>1</span><div>Abre esta página en <b>Safari</b></div></div>
+  <div class="istep"><span>2</span><div>Toca el botón <b>Compartir</b> <span class="kbd">⬆️</span> (abajo en el centro)</div></div>
+  <div class="istep"><span>3</span><div>Baja y elige <b>«Añadir a pantalla de inicio»</b> <span class="kbd">➕</span></div></div>
+  <div class="istep"><span>4</span><div>Toca <b>Añadir</b> y abre OpoQuest desde su icono</div></div>
+  <div class="mut" style="font-size:12px;margin-top:10px">Después, dentro de la app instalada, podrás permitir los avisos.</div>
+  <button class="btn" style="width:100%;margin-top:14px" data-act="phone">Entendido</button>`);
+  openM(`<h3>📲 Instalar en Android</h3>
+  <div class="istep"><span>1</span><div>Abre esta página en <b>Chrome</b></div></div>
+  <div class="istep"><span>2</span><div>Toca el menú <span class="kbd">⋮</span> arriba a la derecha</div></div>
+  <div class="istep"><span>3</span><div>Elige <b>«Instalar aplicación»</b> o <b>«Añadir a pantalla de inicio»</b></div></div>
+  <button class="btn" style="width:100%;margin-top:14px" data-act="phone">Entendido</button>`)}
+/* --- calendario --- */
+const ICSD=['MO','TU','WE','TH','FR','SA','SU'];
+const dtS=(date,time)=>date.replace(/-/g,'')+'T'+(time||'09:00').replace(':','')+'00';
+const addMin=(time,m)=>{const[h,mi]=(time||'09:00').split(':').map(Number);const t=h*60+mi+m,c=Math.min(t,23*60+59);return pad(Math.floor(c/60))+':'+pad(c%60)};
+function nextWd(d0,w){let d=d0;for(let i=0;i<7;i++){if(wd(d)===w)return d;d=addD(d,1)}return d0}
+function fixedReminders(){const t=today(),L=[];
+  S.habits.filter(h=>h.remind).forEach(h=>L.push({id:'h'+h.id,t:`${h.icon} ${h.name}`,d:'Márcalo en OpoQuest',date:t,time:h.remind,dur:10,rr:'FREQ=DAILY'}));
+  S.limits.filter(l=>l.remind).forEach(l=>L.push({id:'l'+l.id,t:`${l.icon} ${l.name}`,d:'Márcalo en OpoQuest',date:t,time:l.remind,dur:10,rr:'FREQ=DAILY'}));
+  L.push({id:'top3',t:'🎯 Elige tus 3 prioridades',d:'Abre OpoQuest y elige lo más importante del día',date:t,time:'08:30',dur:10,rr:'FREQ=DAILY'});
+  L.push({id:'cierre',t:'🌙 Cierre del día',d:'2 minutos en OpoQuest: cómo te has sentido y qué va primero mañana',date:t,time:'21:30',dur:10,rr:'FREQ=DAILY'});
+  L.push({id:'plan',t:'📥 Sube el plan de la semana',d:'Pega en OpoQuest el plan de tu preparador',date:nextWd(t,6),time:'20:00',dur:15,rr:'FREQ=WEEKLY;BYDAY=SU'});
+  L.push({id:'pun',t:'💪 Revisa tus castigos pendientes',d:'Cúmplelos antes de dormir',date:t,time:'21:00',dur:10,rr:'FREQ=DAILY'});
+  S.routines.forEach(r=>L.push({id:'r'+r.id,t:`${CATS[r.cat]} ${r.title}`,d:'Rutina fija de OpoQuest',date:nextWd(t,r.days[0]),time:r.time,dur:r.dur,rr:'FREQ=WEEKLY;BYDAY='+r.days.map(i=>ICSD[i]).join(',')}));
+  return L}
+function weekReminders(){const t=today(),m=monOf(t),nx=addD(m,7),L=[];
+  S.tasks.filter(k=>!k.rid&&!k.done&&k.time&&k.date>=t&&k.date<addD(nx,7)).forEach(k=>L.push({id:'t'+k.id,t:`${CATS[k.cat]} ${k.title}${k.big?' ⭐':''}`,d:k.big?'Tarea agrandada: si no la haces, castigo':'Márcala en OpoQuest al terminar',date:k.date,time:k.time,dur:k.dur}));
+  return L}
+const icsEsc=s=>String(s).replace(/[\;,]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+function buildICS(L,name){const st=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const ev=L.map(e=>['BEGIN:VEVENT',`UID:opoquest-${e.id}@opoquest`,`DTSTAMP:${st}`,`DTSTART:${dtS(e.date,e.time)}`,`DTEND:${dtS(e.date,addMin(e.time,e.dur||10))}`,
+    `SUMMARY:${icsEsc(e.t)}`,`DESCRIPTION:${icsEsc(e.d+' · '+location.href.split('#')[0])}`,e.rr?`RRULE:${e.rr}`:'','BEGIN:VALARM','ACTION:DISPLAY',`DESCRIPTION:${icsEsc(e.t)}`,'TRIGGER:-PT0M','END:VALARM','END:VEVENT'].filter(Boolean).join('\r\n'));
+  const fold=l=>{const c=[...l];if(c.length<=60)return l;const o=[];for(let i=0;i<c.length;i+=60)o.push(c.slice(i,i+60).join(''));return o.join('\r\n ')};
+  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//OpoQuest//ES','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:${name}`,...ev,'END:VCALENDAR'].join('\r\n').split('\r\n').map(fold).join('\r\n')}
+function dlICS(L,file,name){if(!L.length){toast('No hay nada que añadir');return}
+  try{const blob=new Blob([buildICS(L,name)],{type:'text/calendar;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=file;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);
+    S.calDone=1;save();toast('📅 Abre el archivo descargado para añadirlo al calendario')}catch(e){toast('No se ha podido descargar el archivo')}}
+function gcal(e){let tz='Europe/Madrid';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz}catch(_){}
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(e.t)+'&dates='+dtS(e.date,e.time)+'/'+dtS(e.date,addMin(e.time,e.dur||10))+'&details='+encodeURIComponent(e.d)+'&ctz='+encodeURIComponent(tz)+(e.rr?'&recur='+encodeURIComponent('RRULE:'+e.rr):'')}
+function calForm(){const F=fixedReminders(),W=weekReminders();
+  const row=e=>`<div class="mv"><div class="sp" style="font-size:13px">${esc(e.t)}<div class="mut" style="font-size:11px">${e.rr?(e.rr.startsWith('FREQ=DAILY')?'Cada día':'Cada semana')+' · ':DL[wd(e.date)]+' '+pd(e.date).getDate()+' · '}${e.time}</div></div><a class="btn sm ghost" href="${gcal(e)}" target="_blank" rel="noopener">+ Google</a></div>`;
+  openM(`<h3>📅 Avisos con la app cerrada</h3><div class="mut" style="line-height:1.5">Tu móvil te avisará desde su <b>calendario</b>, aunque no abras OpoQuest. Elige una opción:</div>
+  <div class="calopt"><b>🍏 iPhone, Samsung u Outlook</b><div class="mut" style="font-size:12px;margin:4px 0 8px">Descarga el archivo y ábrelo → «Añadir todo».</div>
+   <div class="row" style="gap:8px"><button class="btn sm" style="flex:1" data-act="icsfixed">Recordatorios diarios (${F.length})</button><button class="btn sm ghost" style="flex:1" data-act="icsweek">Tareas de la semana (${W.length})</button></div></div>
+  <div class="calopt"><b>🤖 Android con Google Calendar</b><div class="mut" style="font-size:12px;margin:4px 0 4px">Toca «+ Google» en cada aviso y guárdalo.</div>
+   <details><summary class="lnk" style="cursor:pointer">Recordatorios diarios y rutinas (${F.length})</summary>${F.map(row).join('')}</details>
+   <details style="margin-top:6px"><summary class="lnk" style="cursor:pointer">Tareas de esta semana (${W.length})</summary>${W.map(row).join('')||'<div class="mut" style="padding:8px 0">No hay tareas con hora pendientes</div>'}</details></div>
+  <div class="mut" style="font-size:12px;margin-top:10px">💡 Los <b>recordatorios diarios</b> se añaden una sola vez. Las <b>tareas de la semana</b>, cada domingo después de subir el plan.</div>
+  <button class="btn ghost" style="width:100%;margin-top:12px" data-act="phone">← Volver</button>`)}
+
 /* ============ efectos ============ */
 let LXY=[innerWidth/2,innerHeight/2];
 function floatXP(n){const d=document.createElement('div');d.className='fxp';d.textContent=(n>0?'+':'')+n+' XP';if(n<0)d.style.color='var(--red)';
@@ -547,7 +626,7 @@ const TOUR=[['.dayc','Este anillo es tu día. Llénalo al 80 % para mantener la 
  ['.nav','Aquí cambias de sección: semana, hábitos, límites, dinero y tu liga'],['.help','¿Dudas? Toca la ? y vuelves a ver esta guía cuando quieras']];
 function tour(i=0){let ov=document.getElementById('tour');if(!ov){ov=document.createElement('div');ov.id='tour';document.body.appendChild(ov)}
   while(i<TOUR.length&&!document.querySelector(TOUR[i][0]))i++;
-  if(i>=TOUR.length){ov.remove();toast('✅ ¡Listo! Ya sabes cómo va');return}
+  if(i>=TOUR.length){ov.remove();toast('✅ ¡Listo! Ya sabes cómo va');if(!S.phoneAsked){S.phoneAsked=1;save();setTimeout(phoneSetup,700)}return}
   const el=document.querySelector(TOUR[i][0]);if(!el.closest('.nav')&&!el.classList.contains('fab'))el.scrollIntoView({block:'center'});
   setTimeout(()=>{const r=el.getBoundingClientRect(),below=r.top<innerHeight/2;
     ov.innerHTML=`<div class="tbox" style="left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${r.height+12}px"></div>
@@ -727,7 +806,7 @@ function vPerfil(){const t=today(),l=lvlOf(S.xp),st=streak();
   ${statsHTML()}<h2>Logros</h2><div class="badges">${B.map(([i,n,o])=>`<div class="badge ${o?'on':''}"><b>${i}</b>${n}</div>`).join('')}</div>
   <h2>Reglas del juego</h2><div class="card mut" style="line-height:1.6">✔ Tarea: +10 XP + 1 por cada 6 min · ⭐ Agrandada: ×2<br>✘ Tarea sin hacer: −15 XP · ⭐ Agrandada: −40 XP + castigo<br>💧 Hábito: +5 / −10 XP · Cada 100 XP = 1 nivel (se puede bajar)<br>🔥 Racha: días con ≥80% completado</div>
   <h2>Ajustes</h2><div class="card"><label>Tu nombre en el ranking</label><div class="row"><input id="nk" value="${esc(S.nick)}"><button class="btn sm" data-act="nick">OK</button></div><label>Nombre del examen</label><input id="exN" value="${esc(S.examName)}"><label>Fecha del examen</label><input type="date" id="exD" value="${S.examDate}">
-  <div class="row" style="gap:8px;margin-top:12px"><button class="btn" style="flex:1" data-act="saveset">Guardar</button><button class="btn ghost" style="flex:1" data-act="notif">🔔 Activar avisos</button></div>
+  <div class="row" style="gap:8px;margin-top:12px"><button class="btn" style="flex:1" data-act="saveset">Guardar</button><button class="btn ghost" style="flex:1" data-act="phone">📲 Móvil y avisos</button></div>
   <label class="tog"><input type="checkbox" data-act="srs" ${S.srs?'checked':''}> <span>🧠 <b>Repaso espaciado</b>: al terminar un tema, programa repasos a 1, 7 y 30 días</span></label>
   <div class="row" style="gap:8px;margin-top:10px"><button class="btn ghost sm" style="flex:1" data-act="exp">💾 Copia de seguridad</button><button class="btn ghost sm" style="flex:1" data-act="imp">📂 Restaurar</button></div>
   <button class="btn ghost sm" style="margin-top:8px;width:100%" data-act="guide">📖 Ver la guía de uso</button>
@@ -831,7 +910,7 @@ document.addEventListener('click',e=>{
     case'doimport':{const items=parsePlan($('#iT').value),w=$('#iW').value;if(!items.length){toast('No hay tareas válidas');return}
       S.tasks=S.tasks.filter(x=>!(x.fromPlan&&x.week===w&&!x.done));
       items.forEach(i=>S.tasks.push({id:uid(),date:addD(w,i.day),time:i.time,dur:i.dur,title:i.title,cat:i.cat,big:i.big,done:false,fromPlan:true,week:w}));
-      closeM();SEL=w;TAB='semana';toast(`📥 Plan importado: ${items.length} tareas`);break}
+      closeM();SEL=w;TAB='semana';toast(`📥 Plan importado: ${items.length} tareas · Pásalas al calendario para que te avise`);break}
     case'pomo':pomo.run=!pomo.run;if(pomo.run){pomo.h=setInterval(pomoTick,1000)}else clearInterval(pomo.h);break;
     case'pomoreset':clearInterval(pomo.h);pomo={left:25*60,run:false,mode:'foco',h:null};break;
     case'saveset':S.examName=$('#exN').value||'Examen';S.examDate=$('#exD').value||S.examDate;toast('Guardado');break;
@@ -883,7 +962,7 @@ document.addEventListener('click',e=>{
     case'obskip':if(S.onboarded){closeM();return}setupForm();return;
     case'obdone':S.guideV=2;save();closeM();TAB='hoy';render();setTimeout(()=>tour(0),300);return;
     case'tour':tour(+b.dataset.n);return;
-    case'tourend':document.getElementById('tour')?.remove();return;
+    case'tourend':document.getElementById('tour')?.remove();if(!S.phoneAsked){S.phoneAsked=1;save();setTimeout(phoneSetup,500)}return;
     case'guide':onboard(0);return;
     case'ob':{const n=+b.dataset.n;if(n<OB.length){onboard(n);return}setupForm();return}
     case'fab':fabMenu();return;
@@ -920,6 +999,14 @@ document.addEventListener('click',e=>{
       if(b.dataset.v==='zero'){Object.assign(S,{tasks:[],routines:[],punishments:[],habitLog:{},limitLog:{},xp:0,coins:50,doneTotal:0,bestStreak:0,pomos:0,top3:{},journal:{},friends:[],claimed:{},offDays:{},frozen:{},league:0,lastProc:addD(t,-1),wk:{m:monOf(t),xp:0}});
         Object.assign(S.money,{moves:[],fixed:[],goals:[],fixedDone:{},overFlag:{}})}
       S.onboarded=1;S.guideV=2;closeM();TAB='hoy';setTimeout(()=>tour(0),900);confetti();toast(`¡Bienvenido/a, ${S.nick}! ${b.dataset.v==='zero'?'Añade tu primera tarea con el botón +':'Explora los datos de ejemplo'}`);pushBoardSoon();break}
+    case'phone':phoneSetup();return;
+    case'hideinst':S.hideInstall=t;break;
+    case'install':if(isStandalone()){toast('Ya está instalada ✓');return}if(DEFERRED){DEFERRED.prompt();DEFERRED.userChoice.then(r=>{DEFERRED=null;toast(r.outcome==='accepted'?'✅ Instalando OpoQuest…':'Instalación cancelada');setTimeout(phoneSetup,800)})}else installHelp();return;
+    case'askperm':if(!('Notification' in window)){isIOS?installHelp():toast('Este navegador no admite avisos');return}
+      Notification.requestPermission().then(p=>{if(p==='granted'){notify('🔔 ¡Avisos activados!','Así te avisará OpoQuest');S.notifOn=1;save()}else toast('Has bloqueado los avisos. Puedes activarlos en los ajustes del móvil');if($('#modal').classList.contains('on'))phoneSetup();else render()});return;
+    case'calset':calForm();return;
+    case'icsfixed':dlICS(fixedReminders(),'opoquest-recordatorios.ics','OpoQuest');return;
+    case'icsweek':dlICS(weekReminders(),'opoquest-semana-'+monOf(t)+'.ics','OpoQuest · semana');return;
     case'close':closeM();return;
   }
   save();render();

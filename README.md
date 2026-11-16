@@ -32,13 +32,18 @@ Una vez instalada se abre a pantalla completa, con su propio icono, y funciona s
 
 ---
 
-## 🔔 Avisos
+## 🔔 Avisos (con la app abierta y con la app cerrada)
 
-Dentro de la app: **Liga → Perfil → 🔔 Activar avisos** y aceptar el permiso.
+La primera vez que se abre la app, tras la guía, aparece **«📲 Configura tu móvil»** con 3 pasos (también en *Liga → Perfil → 📲 Móvil y avisos*):
 
-- Los avisos (tareas, agua, salir de casa, cierre del día, plan del domingo…) saltan mientras la app está abierta o en segundo plano reciente.
-- En iPhone los avisos solo funcionan con la app **instalada** en la pantalla de inicio (iOS 16.4 o superior).
-- Para avisos con la app totalmente cerrada haría falta un servidor de notificaciones push (posible ampliación futura).
+1. **Instalar la app** — botón directo en Android; en iPhone muestra los pasos de Safari.
+2. **Permitir avisos** — pide el permiso del móvil. Avisa de tareas, agua, salir de casa, castigos, cierre del día y plan del domingo mientras la app está abierta o en segundo plano reciente. En iPhone solo funciona con la app instalada (iOS 16.4+).
+3. **Avisos con la app cerrada** — pasa los recordatorios al **calendario del móvil**, que avisa siempre aunque la app esté cerrada:
+   - **iPhone / Samsung / Outlook:** descarga un archivo `.ics` → abrirlo → «Añadir todo».
+   - **Android con Google Calendar:** botón «+ Google» en cada recordatorio.
+   - Los recordatorios diarios (hábitos, prioridades 8:30, castigos 21:00, cierre 21:30, plan del domingo y rutinas fijas) se añaden **una vez**. Las tareas de la semana, **cada domingo** después de subir el plan (botón en la pestaña *Semana*).
+
+> Notificaciones push "de verdad" a horas personalizadas sin calendario requieren un servidor (Firebase u OneSignal + una función programada). Es una posible ampliación.
 
 ---
 
