@@ -1,0 +1,16 @@
+{
+  "name": "OpoQuest — Tu rutina como un juego",
+  "short_name": "OpoQuest",
+  "description": "Organiza tu día como un juego: tareas, hábitos, límites, dinero y ligas.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d0f14",
+  "theme_color": "#0d0f14",
+  "lang": "es",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
