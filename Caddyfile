@@ -1,0 +1,13 @@
+{
+	admin off
+	auto_https off
+}
+
+:{$PORT:8080} {
+	root * /srv
+	encode gzip
+	header /sw.js Cache-Control "no-cache"
+	header /index.html Cache-Control "no-cache"
+	try_files {path} /index.html
+	file_server
+}
